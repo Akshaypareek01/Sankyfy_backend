@@ -11,6 +11,12 @@ import { createReadStream, promises as fsPromises } from 'fs';
 import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import connection from './configs/db.js';
+import ShopKeeperRouter from './routes/ShopKeeper.Router.js';
+import UserRouter from './routes/User.Router.js';
+import ShopRouter from './routes/Shop.Router.js';
+import AdminRouter from './routes/Admin.Router.js';
+import { createShop } from './controllers/Shop.Controller.js';
+import { signupShopkeeper } from './controllers/ShopKeeper.Controller.js';
 
 const app = express()
 const port = 5000
@@ -87,6 +93,12 @@ app.get('/api/', (req, res) => {
     }
   }
 
+  app.post('/api/shop',upload.array('images', 4),createShop)
+  app.post('/api/shopkeeper',upload.array('images', 4),signupShopkeeper)
+  app.use('/api/admin', AdminRouter);
+  app.use('/api/user', UserRouter);
+  app.use('/api/shopkeepers', ShopKeeperRouter);
+  app.use('/api/shop', ShopRouter);
   app.listen(port,() =>{
     connection();
     console.log(`Sankyfy Server listening on port ${port}!`)
