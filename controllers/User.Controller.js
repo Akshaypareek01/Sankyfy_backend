@@ -5,9 +5,9 @@ import User from '../models/User.Model.js';
 // Signup user
 const signupUser = async (req, res) => {
     try {
-        const { name, email, mobile, password } = req.body;
+        const { name, email, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create({ name, email, mobile, password: hashedPassword });
+        const user = await User.create({ name, email, password: hashedPassword });
         res.status(201).json({ success: true, data: user });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
