@@ -7,12 +7,10 @@ const shopkeeperSchema = new mongoose.Schema({
     password: { type: String, required: true },
     aadharOrPAN: { type: String, required: true },
     fssaiLicense: { type: String },
-    aadharOrPANImage: { type: String },
     gstinNumber: { type: String, required: true },
     businessPanCardNumber: { type: String, required: true },
     companyName: { type: String, required: true },
-    gstCertificateImage: { type: String },
-    gstPanImage: { type: String },
+    
     status: { type: Boolean, default: false },
     images: [{
         filename: String, // Store the filename of the image

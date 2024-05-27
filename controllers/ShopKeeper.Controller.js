@@ -1,5 +1,6 @@
 import Shopkeeper from "../models/ShopKeeperModel.js";
 import bcrypt from 'bcrypt';
+import { deleteFile } from "../utils/deleteImages.js";
 
 // Signup shopkeeper
 const signupShopkeeper = async (req, res) => {
@@ -63,7 +64,41 @@ const getShopkeeperById = async (req, res) => {
 
 // Update shopkeeper by ID
 const updateShopkeeper = async (req, res) => {
+    console.log("Update Shop Keeper ==>")
     try {
+        const {password} = req.body;
+        const existingUser = await Shopkeeper.findById(req.params.id);
+
+        if (!existingUser) {
+            return res.status(404).json({ success: false, error: 'Shopkeeper not found' });
+        }
+        if (password) {
+            const isMatch = await bcrypt.compare(password, existingUser.password);
+            if (!isMatch) {
+                req.body.password = await bcrypt.hash(password, 10);
+            } else {
+                // If passwords match, do not hash the new password (remove it from req.body)
+                delete req.body.password;
+            }
+        }
+        const images = req.files || [];
+
+        if(images.length > 0){
+            for (const oldImage of existingUser.images) {
+                const oldImagePath = oldImage.path;
+                try {
+                    await deleteFile(oldImagePath);
+                } catch (error) {
+                    console.error(`Error deleting file ${ oldImage.path}:`, error);
+                }
+            }
+
+            req.body.images = images.map(file => ({
+                filename: file.filename,
+                path: file.path
+            }));
+        }
+       
         const shopkeeper = await Shopkeeper.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true

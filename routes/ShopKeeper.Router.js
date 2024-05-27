@@ -16,7 +16,7 @@ ShopKeeperRouter.get('/', getAllShopkeepers);
 ShopKeeperRouter.get('/:id', getShopkeeperById);
 
 // Route to update shopkeeper by ID
-ShopKeeperRouter.put('/:id', updateShopkeeper);
+// ShopKeeperRouter.put('/:id', updateShopkeeper);
 
 // Route to delete shopkeeper by ID
 ShopKeeperRouter.delete('/:id', deleteShopkeeper);

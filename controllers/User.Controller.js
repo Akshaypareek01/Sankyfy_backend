@@ -57,17 +57,30 @@ const getAllUsers = async (req, res) => {
 // Update user by ID
 const updateUserById = async (req, res) => {
     try {
-        const { name, email, mobile, password } = req.body;
-        if (password) {
-            req.body.password = await bcrypt.hash(password, 10);
+        const { name, email, password } = req.body;
+        
+        // Fetch the user to compare the passwords
+        const existingUser = await User.findById(req.params.id);
+
+        if (!existingUser) {
+            return res.status(404).json({ success: false, error: 'User not found' });
         }
+
+        if (password) {
+            const isMatch = await bcrypt.compare(password, existingUser.password);
+            if (!isMatch) {
+                req.body.password = await bcrypt.hash(password, 10);
+            } else {
+                // If passwords match, do not hash the new password (remove it from req.body)
+                delete req.body.password;
+            }
+        }
+
         const user = await User.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
         });
-        if (!user) {
-            return res.status(404).json({ success: false, error: 'User not found' });
-        }
+
         res.status(200).json({ success: true, data: user });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });

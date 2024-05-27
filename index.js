@@ -16,7 +16,7 @@ import UserRouter from './routes/User.Router.js';
 import ShopRouter from './routes/Shop.Router.js';
 import AdminRouter from './routes/Admin.Router.js';
 import { createShop } from './controllers/Shop.Controller.js';
-import { signupShopkeeper } from './controllers/ShopKeeper.Controller.js';
+import { signupShopkeeper, updateShopkeeper } from './controllers/ShopKeeper.Controller.js';
 
 const app = express()
 const port = 5000
@@ -35,7 +35,7 @@ app.get('/api/', (req, res) => {
       cb(null, 'media/'); // Set the destination folder for image storage
     },
     filename: function (req, file, cb) {
-      cb(null, file.originalname); // Use the original filename for the stored image
+      cb(null, +new Date() + Math.random(0,1000) + file.originalname); // Use the original filename for the stored image
     },
   });
   const upload = multer({ storage: storage });
@@ -59,10 +59,19 @@ app.get('/api/', (req, res) => {
   };
   
   const mediaPath = 'media/';
+  const fileExists = async (path) => {
+    try {
+      await fsPromises.access(path);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  
   app.get('/api/media/:imageName', async (req, res) => {
     const imageName = req.params.imageName;
     const imagePath = join(mediaPath, imageName);
-  
+   console.log("File exixst",await fileExists(imagePath))
     // Check if the requested image exists
     if (await fileExists(imagePath)) {
       const readStream = createReadStream(imagePath);
@@ -71,7 +80,7 @@ app.get('/api/', (req, res) => {
       // If the image doesn't exist, serve a default image
       const currentModulePath = fileURLToPath(import.meta.url);
       const currentModuleDir = dirname(currentModulePath);
-      const defaultImagePath = resolve(currentModuleDir, 'media', 'default-image.jpg');
+      const defaultImagePath = resolve(currentModuleDir, 'media', 'default-image.png');
       const defaultImageStream = createReadStream(defaultImagePath);
   
       defaultImageStream.on('error', (err) => {
@@ -82,19 +91,20 @@ app.get('/api/', (req, res) => {
     }
   });
 
-  async function fileExists(filePath) {
-    try {
-      await fsPromises.access(filePath);
-      console.log("File exists");
-      return true;
-    } catch (err) {
-      console.log("File does not exist");
-      return false;
-    }
-  }
+  // async function fileExists(filePath) {
+  //   try {
+  //     await fsPromises.access(filePath);
+  //     console.log("File exists");
+  //     return true;
+  //   } catch (err) {
+  //     console.log("File does not exist");
+  //     return false;
+  //   }
+  // }
 
   app.post('/api/shop',upload.array('images', 4),createShop)
   app.post('/api/shopkeeper',upload.array('images', 4),signupShopkeeper)
+  app.put('/api/shopkeeper/:id',upload.array('images', 4),updateShopkeeper)
   app.use('/api/admin', AdminRouter);
   app.use('/api/user', UserRouter);
   app.use('/api/shopkeepers', ShopKeeperRouter);
