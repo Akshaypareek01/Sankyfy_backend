@@ -15,7 +15,7 @@ import ShopKeeperRouter from './routes/ShopKeeper.Router.js';
 import UserRouter from './routes/User.Router.js';
 import ShopRouter from './routes/Shop.Router.js';
 import AdminRouter from './routes/Admin.Router.js';
-import { createShop } from './controllers/Shop.Controller.js';
+import { createShop, updateShopById } from './controllers/Shop.Controller.js';
 import { signupShopkeeper, updateShopkeeper } from './controllers/ShopKeeper.Controller.js';
 
 const app = express()
@@ -101,11 +101,12 @@ app.get('/api/', (req, res) => {
   //     return false;
   //   }
   // }
-
+  app.use('/admin', AdminRouter);
   app.post('/api/shop',upload.array('images', 4),createShop)
+  app.put('/api/shop/:id',upload.array('images', 4),updateShopById)
   app.post('/api/shopkeeper',upload.array('images', 4),signupShopkeeper)
   app.put('/api/shopkeeper/:id',upload.array('images', 4),updateShopkeeper)
-  app.use('/api/admin', AdminRouter);
+
   app.use('/api/user', UserRouter);
   app.use('/api/shopkeepers', ShopKeeperRouter);
   app.use('/api/shop', ShopRouter);

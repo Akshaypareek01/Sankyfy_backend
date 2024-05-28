@@ -1,5 +1,5 @@
 import express from 'express';
-import {signupShopkeeper,loginShopkeeper, deleteShopkeeper, getAllShopkeepers, getShopkeeperById, updateShopkeeper } from '../controllers/ShopKeeper.Controller.js';
+import {signupShopkeeper,loginShopkeeper, deleteShopkeeper, getAllShopkeepers, getShopkeeperById, updateShopkeeper, updateShopKeeperStatus } from '../controllers/ShopKeeper.Controller.js';
 
 
 const ShopKeeperRouter = express.Router();
@@ -14,7 +14,7 @@ ShopKeeperRouter.get('/', getAllShopkeepers);
 
 // Route to get shopkeeper by ID
 ShopKeeperRouter.get('/:id', getShopkeeperById);
-
+ShopKeeperRouter.post('/update-status', updateShopKeeperStatus);
 // Route to update shopkeeper by ID
 // ShopKeeperRouter.put('/:id', updateShopkeeper);
 

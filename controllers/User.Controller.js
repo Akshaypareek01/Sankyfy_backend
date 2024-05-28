@@ -87,6 +87,29 @@ const updateUserById = async (req, res) => {
     }
 };
 
+const updateUserStatus = async (req, res) => {
+    const { shopId, status } = req.body;
+    //  console.log("Shop ==>",shopId, status )
+    try {
+        const shopData = await User.findById(shopId);
+        console.log("ShopData ==>",shopData);
+      const shop = await User.findByIdAndUpdate(
+        shopId,
+        { status },
+        { new: true } // Return the updated document
+      );
+  
+      if (!shop) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      res.status(200).json({ message: 'User status updated successfully', shop });
+    } catch (error) {
+      console.error('Error updating shop status:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+
 // Delete user by ID
 const deleteUserById = async (req, res) => {
     try {
@@ -103,4 +126,4 @@ const deleteUserById = async (req, res) => {
 
 // Other CRUD operations can be added similarly
 
-export { signupUser, loginUser, getUserById,getAllUsers, updateUserById, deleteUserById };
+export { signupUser, loginUser, getUserById,getAllUsers, updateUserById, deleteUserById,updateUserStatus };

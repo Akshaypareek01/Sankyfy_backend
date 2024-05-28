@@ -112,6 +112,29 @@ const updateShopkeeper = async (req, res) => {
     }
 };
 
+const updateShopKeeperStatus = async (req, res) => {
+    const { shopId, status } = req.body;
+    //  console.log("Shop ==>",shopId, status )
+    try {
+        const shopData = await Shopkeeper.findById(shopId);
+        console.log("ShopData ==>",shopData);
+      const shop = await Shopkeeper.findByIdAndUpdate(
+        shopId,
+        { status },
+        { new: true } // Return the updated document
+      );
+  
+      if (!shop) {
+        return res.status(404).json({ message: 'Shopkeeper not found' });
+      }
+  
+      res.status(200).json({ message: 'Shopkeeper status updated successfully', shop });
+    } catch (error) {
+      console.error('Error updating shop status:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+
 // Delete shopkeeper by ID
 const deleteShopkeeper = async (req, res) => {
     try {
@@ -125,4 +148,4 @@ const deleteShopkeeper = async (req, res) => {
     }
 };
 
-export {signupShopkeeper,loginShopkeeper, getAllShopkeepers, getShopkeeperById, updateShopkeeper, deleteShopkeeper };
+export {signupShopkeeper,loginShopkeeper, getAllShopkeepers, getShopkeeperById, updateShopkeeper, deleteShopkeeper,updateShopKeeperStatus };
