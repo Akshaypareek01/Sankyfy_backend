@@ -1,5 +1,5 @@
 import express from 'express';
-import { createShop, getAllShops, getShopById, updateShopById,deleteShop, updateShopStatus } from '../controllers/Shop.Controller.js';
+import { createShop, getAllShops, getShopById, updateShopById,deleteShop, updateShopStatus, getNearbyShops } from '../controllers/Shop.Controller.js';
 
 
 const ShopRouter = express.Router();
@@ -9,7 +9,7 @@ const ShopRouter = express.Router();
 
 // Route to get shop by ID
 ShopRouter.get('/:id', getShopById);
-
+ShopRouter.post('/nearby', getNearbyShops);
 // Route to get all shops
 ShopRouter.get('/', getAllShops);
 

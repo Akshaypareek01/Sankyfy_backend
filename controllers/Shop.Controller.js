@@ -1,5 +1,6 @@
 import Shop from "../models/Shop.Model.js";
 import { deleteFile } from "../utils/deleteImages.js";
+import { haversine } from "../utils/distance.js";
 
 
 
@@ -20,10 +21,31 @@ const createShop = async (req, res) => {
     }
 };
 
+const getNearbyShops = async (req, res) => {
+    const { lat, lng, maxDistance } = req.body; // User's location and max distance in kilometers
+  
+    if (!lat || !lng) {
+      return res.status(400).json({ error: 'Latitude and longitude are required' });
+    }
+  
+    try {
+      const shops = await Shop.find();
+      const nearbyShops = shops.filter((shop) => {
+        const distance = haversine(lat, lng, shop.lat, shop.lng);
+        // console.log("Distance ==>",distance,maxDistance)
+        return distance <= maxDistance;
+      });
+  
+      res.json(nearbyShops);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+
 // Get shop by ID
 const getShopById = async (req, res) => {
     try {
-        const shop = await Shop.findById(req.params.id);
+        const shop = await Shop.findById(req.params.id).populate("shopkeeperId").exec();
         if (!shop) {
             return res.status(404).json({ success: false, error: 'Shop not found' });
         }
@@ -119,4 +141,4 @@ const deleteShop = async (req, res) => {
 
 // Other CRUD operations can be added similarly
 
-export { createShop, getShopById, getAllShops, updateShopById,deleteShop,updateShopStatus };
+export { createShop, getShopById, getAllShops, updateShopById,deleteShop,updateShopStatus,getNearbyShops };

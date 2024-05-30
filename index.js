@@ -17,6 +17,7 @@ import ShopRouter from './routes/Shop.Router.js';
 import AdminRouter from './routes/Admin.Router.js';
 import { createShop, updateShopById } from './controllers/Shop.Controller.js';
 import { signupShopkeeper, updateShopkeeper } from './controllers/ShopKeeper.Controller.js';
+import FeedBackRouter from './routes/Feedback.Router.js';
 
 const app = express()
 const port = 5000
@@ -110,6 +111,7 @@ app.get('/api/', (req, res) => {
   app.use('/api/user', UserRouter);
   app.use('/api/shopkeepers', ShopKeeperRouter);
   app.use('/api/shop', ShopRouter);
+  app.use('/api/feedback', FeedBackRouter);
   app.listen(port,() =>{
     connection();
     console.log(`Sankyfy Server listening on port ${port}!`)
