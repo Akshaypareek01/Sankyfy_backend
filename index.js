@@ -18,7 +18,8 @@ import AdminRouter from './routes/Admin.Router.js';
 import { createShop, updateShopById } from './controllers/Shop.Controller.js';
 import { signupShopkeeper, updateShopkeeper } from './controllers/ShopKeeper.Controller.js';
 import FeedBackRouter from './routes/Feedback.Router.js';
-
+import categoryRouter from './routes/Categories.Router.js';
+import {Unified_PinCode_Data} from "./configs/data.js"
 const app = express()
 const port = 5000
 
@@ -102,6 +103,22 @@ app.get('/api/', (req, res) => {
   //     return false;
   //   }
   // }
+  app.get("/api/unifiedPinCode",async(req,res)=>{
+    try{
+      res.status(200).send({
+        message:"data get success",
+        data:Unified_PinCode_Data,
+        status:"success"
+       });
+    }
+     catch(err){
+      res.status(400).send({
+        message:"fail",
+        error:err
+       });
+     }
+  })
+
   app.use('/admin', AdminRouter);
   app.post('/api/shop',upload.array('images', 4),createShop)
   app.put('/api/shop/:id',upload.array('images', 4),updateShopById)
@@ -112,6 +129,7 @@ app.get('/api/', (req, res) => {
   app.use('/api/shopkeepers', ShopKeeperRouter);
   app.use('/api/shop', ShopRouter);
   app.use('/api/feedback', FeedBackRouter);
+  app.use("/api/category",categoryRouter)
   app.listen(port,() =>{
     connection();
     console.log(`Sankyfy Server listening on port ${port}!`)
