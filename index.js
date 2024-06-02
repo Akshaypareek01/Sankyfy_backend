@@ -20,6 +20,7 @@ import { signupShopkeeper, updateShopkeeper } from './controllers/ShopKeeper.Con
 import FeedBackRouter from './routes/Feedback.Router.js';
 import categoryRouter from './routes/Categories.Router.js';
 import {Unified_PinCode_Data} from "./configs/data.js"
+import ChatRouter from './routes/Chat.Router.js';
 const app = express()
 const port = 5000
 
@@ -130,6 +131,7 @@ app.get('/api/', (req, res) => {
   app.use('/api/shop', ShopRouter);
   app.use('/api/feedback', FeedBackRouter);
   app.use("/api/category",categoryRouter)
+  app.use("/api/chat",ChatRouter)
   app.listen(port,() =>{
     connection();
     console.log(`Sankyfy Server listening on port ${port}!`)
