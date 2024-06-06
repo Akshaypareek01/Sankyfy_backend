@@ -62,7 +62,6 @@ export const updateChat = async (req, res) => {
     }
 };
 
-// Delete a chat message by ID
 export const deleteChat = async (req, res) => {
     try {
         const { id } = req.params;
