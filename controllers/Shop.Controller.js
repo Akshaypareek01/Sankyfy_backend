@@ -44,14 +44,24 @@ const getNearbyShops = async (req, res) => {
 
 // Get shop by ID
 const getShopById = async (req, res) => {
+    const shopId = req.params.id;
+    console.log("Id of shop:", shopId);
+
+    if (!shopId.match(/^[0-9a-fA-F]{24}$/)) {
+        return res.status(400).json({ success: false, error: 'Invalid shop ID format' });
+    }
+
     try {
-        const shop = await Shop.findById(req.params.id).populate("shopkeeperId").exec();
+        const shop = await Shop.findById(shopId).populate("shopkeeperId").exec();;
         if (!shop) {
+            console.log(`Shop with ID ${shopId} not found`);
             return res.status(404).json({ success: false, error: 'Shop not found' });
         }
+        console.log("Shop data:", shop);
         res.status(200).json({ success: true, data: shop });
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        console.error(`Error fetching shop with ID ${shopId}:`, error);
+        res.status(500).json({ success: false, error: 'Server error' });
     }
 };
 
